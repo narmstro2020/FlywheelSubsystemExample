@@ -120,7 +120,7 @@ public class FlywheelSubsystem extends SubsystemBase {
                 velocity,
                 voltageConsumer,
                 updater,
-                VelocityControlLoop.createSimpleMotorPIDF(pidfConfigs, controlLoopPeriodSeconds),
+                VelocityControlLoop.createFlywheelPIDF(pidfConfigs, controlLoopPeriodSeconds),
                 controlLoopPeriodSeconds,
                 controlLoopPeriodOffsetSeconds,
                 updaterPeriodSeconds,
