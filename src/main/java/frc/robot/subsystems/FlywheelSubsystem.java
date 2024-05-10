@@ -133,7 +133,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         setDefaultCommand(
                 Commands.sequence(
                                 runOnce(() -> sysIdActive = false),
-                                run(() -> velocitySetpoint.mut_setMagnitude(velocity.in(RadiansPerSecond))))
+                                run(() -> velocitySetpoint.mut_setMagnitude(0.0)))
                         .withName("STOP"));
     }
 
