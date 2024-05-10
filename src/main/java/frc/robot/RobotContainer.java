@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.controlLoops.VelocityControlLoop;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.util.function.BiConsumer;
@@ -31,7 +32,9 @@ public class RobotContainer {
                 FlywheelSubsystem.createNEOVortexPIDF(
                         Constants.ExampleFlywheel.name,
                         Constants.ExampleFlywheel.revConfig,
-                        Constants.ExampleFlywheel.pidConfigs,
+                        VelocityControlLoop.createFlywheelPIDF(
+                                Constants.ExampleFlywheel.pidConfigs,
+                                Constants.ExampleFlywheel.controlLoopPeriodSeconds),
                         Constants.ExampleFlywheel.gearing,
                         Constants.ExampleFlywheel.controlLoopPeriodSeconds,
                         Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
@@ -39,11 +42,14 @@ public class RobotContainer {
                         Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
                         addPeriodicMethod)
                 :
-                FlywheelSubsystem.createSimulatedPIDF(
+                FlywheelSubsystem.createSimulated(
                         Constants.ExampleFlywheel.name,
                         Constants.ExampleFlywheel.pidConfigs,
                         Constants.ExampleFlywheel.gearbox,
                         Constants.ExampleFlywheel.gearing,
+                        VelocityControlLoop.createFlywheelPIDF(
+                                Constants.ExampleFlywheel.pidConfigs,
+                                Constants.ExampleFlywheel.controlLoopPeriodSeconds),
                         Constants.ExampleFlywheel.controlLoopPeriodSeconds,
                         Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
                         Constants.ExampleFlywheel.updaterPeriodSeconds,

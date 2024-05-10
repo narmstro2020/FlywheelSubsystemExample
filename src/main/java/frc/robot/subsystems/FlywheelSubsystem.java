@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.configs.PIDFConfigs;
 import frc.robot.configs.REVConfig;
-import frc.robot.controlLoops.VelocityControlLoop;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -28,7 +27,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     public static FlywheelSubsystem createNEOVortexPIDF(
             String name,
             REVConfig revConfig,
-            PIDFConfigs pidfConfigs,
+            BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> controlLoop,
             double gearing,
             double controlLoopPeriodSeconds,
             double controlLoopPeriodOffsetSeconds,
@@ -39,7 +38,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         MutableMeasure<Current> current = MutableMeasure.zero(Amps);
         MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
         MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
-        return FlywheelSubsystem.createPIDF(
+        return new FlywheelSubsystem(
                 name,
                 current,
                 voltage,
@@ -50,7 +49,7 @@ public class FlywheelSubsystem extends SubsystemBase {
                     voltage.mut_setMagnitude(canSparkFlex.getAppliedOutput() * canSparkFlex.getBusVoltage());
                     velocity.mut_setMagnitude(canSparkFlex.getEncoder().getVelocity());
                 },
-                pidfConfigs,
+                controlLoop,
                 controlLoopPeriodSeconds,
                 controlLoopPeriodOffsetSeconds,
                 updatePeriodSeconds,
@@ -60,11 +59,12 @@ public class FlywheelSubsystem extends SubsystemBase {
         );
     }
 
-    public static FlywheelSubsystem createSimulatedPIDF(
+    public static FlywheelSubsystem createSimulated(
             String name,
             PIDFConfigs pidfConfigs,
             DCMotor gearbox,
             double gearing,
+            BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> controlLoop,
             double controlLoopPeriodSeconds,
             double controlLoopPeriodOffsetSeconds,
             double updatePeriodSeconds,
@@ -79,7 +79,7 @@ public class FlywheelSubsystem extends SubsystemBase {
                 pidfConfigs.kA());
         SimFlywheel simFlywheel = new SimFlywheel(plant, gearbox, gearing);
 
-        return FlywheelSubsystem.createPIDF(
+        return new FlywheelSubsystem(
                 name,
                 current,
                 voltage,
@@ -91,7 +91,7 @@ public class FlywheelSubsystem extends SubsystemBase {
                     velocity.mut_setMagnitude(simFlywheel.getAngularVelocityRadPerSec());
                     simFlywheel.update(updatePeriodSeconds);
                 },
-                pidfConfigs,
+                controlLoop,
                 controlLoopPeriodSeconds,
                 controlLoopPeriodOffsetSeconds,
                 updatePeriodSeconds,
@@ -99,34 +99,6 @@ public class FlywheelSubsystem extends SubsystemBase {
                 addPeriodicMethod);
     }
 
-    private static FlywheelSubsystem createPIDF(
-            String name,
-            Measure<Current> current,
-            Measure<Voltage> voltage,
-            Measure<Velocity<Angle>> velocity,
-            Consumer<Measure<Voltage>> voltageConsumer,
-            Runnable updater,
-            PIDFConfigs pidfConfigs,
-            double controlLoopPeriodSeconds,
-            double controlLoopPeriodOffsetSeconds,
-            double updaterPeriodSeconds,
-            double updaterPeriodOffsetSeconds,
-            Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod
-    ) {
-        return new FlywheelSubsystem(
-                name,
-                current,
-                voltage,
-                velocity,
-                voltageConsumer,
-                updater,
-                VelocityControlLoop.createFlywheelPIDF(pidfConfigs, controlLoopPeriodSeconds),
-                controlLoopPeriodSeconds,
-                controlLoopPeriodOffsetSeconds,
-                updaterPeriodSeconds,
-                updaterPeriodOffsetSeconds,
-                addPeriodicMethod);
-    }
 
     private final Measure<Current> current;
     private final Measure<Voltage> voltage;
