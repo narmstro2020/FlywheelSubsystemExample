@@ -5,7 +5,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,16 +26,15 @@ public class RobotContainer {
 
     public RobotContainer(Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
         exampleFlywheelSubsystem = FlywheelSubsystem.createSimulatedPIDF(
-                "Example",
-                1,
-                1,
-                1,
-                DCMotor.getNeoVortex(1),
-                0.01,
-                0.01,
-                0.00,
-                0.01,
-                0.00,
+                Constants.ExampleFlywheel.name,
+                Constants.ExampleFlywheel.pidConfigs,
+                Constants.ExampleFlywheel.feedforwardConfigs,
+                Constants.ExampleFlywheel.gearbox,
+                Constants.ExampleFlywheel.gearing,
+                Constants.ExampleFlywheel.controlLoopPeriodSeconds,
+                Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
+                Constants.ExampleFlywheel.updaterPeriodSeconds,
+                Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
                 addPeriodicMethod);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         autoChooser.addOption("NONE", Commands.none());

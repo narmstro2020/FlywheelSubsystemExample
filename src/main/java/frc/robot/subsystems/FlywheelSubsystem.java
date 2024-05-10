@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 
+import com.revrobotics.CANSparkFlex;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -14,21 +15,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.configs.FeedforwardConfigs;
+import frc.robot.configs.PIDConfigs;
+import frc.robot.configs.REVConfig;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.revrobotics.CANSparkLowLevel.*;
 import static edu.wpi.first.units.Units.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
 
+    public static FlywheelSubsystem createNEOVortexPIDF(
+            REVConfig revConfig,
+            PIDConfigs pidConfigs,
+            FeedforwardConfigs feedforwardConfigs) {
+        CANSparkFlex canSparkFlex = new CANSparkFlex(revConfig.deviceId(), MotorType.kBrushless);
+        return null;
+    }
+
     public static FlywheelSubsystem createSimulatedPIDF(
             String name,
-            double kV,
-            double kA,
-            double kP,
+            PIDConfigs pidConfigs,
+            FeedforwardConfigs feedforwardConfigs,
             DCMotor gearbox,
             double gearing,
             double controlLoopPeriodSeconds,
@@ -40,13 +52,12 @@ public class FlywheelSubsystem extends SubsystemBase {
         MutableMeasure<Current> current = MutableMeasure.zero(Amps);
         MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
         MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
-        LinearSystem<N1, N1, N1> plant = LinearSystemId.identifyVelocitySystem(kV, kA);
+        LinearSystem<N1, N1, N1> plant = LinearSystemId.identifyVelocitySystem(
+                feedforwardConfigs.kV(),
+                feedforwardConfigs.kA());
         SimFlywheel simFlywheel = new SimFlywheel(plant, gearbox, gearing);
-        SimpleMotorFeedforward simpleMotorFeedforward = new SimpleMotorFeedforward(0, kV, kA);
-        PIDController pidController = new PIDController(kP, 0, 0, controlLoopPeriodSeconds);
-        MutableMeasure<Voltage> controlLoopOutput = MutableMeasure.zero(Volts);
 
-        return new FlywheelSubsystem(
+        return FlywheelSubsystem.createPIDF(
                 name,
                 current,
                 voltage,
@@ -58,6 +69,47 @@ public class FlywheelSubsystem extends SubsystemBase {
                     velocity.mut_setMagnitude(simFlywheel.getAngularVelocityRadPerSec());
                     simFlywheel.update(updatePeriodSeconds);
                 },
+                pidConfigs,
+                feedforwardConfigs,
+                controlLoopPeriodSeconds,
+                controlLoopPeriodOffsetSeconds,
+                updatePeriodSeconds,
+                updatePeriodOffsetSeconds,
+                addPeriodicMethod);
+    }
+
+    private static FlywheelSubsystem createPIDF(
+            String name,
+            Measure<Current> current,
+            Measure<Voltage> voltage,
+            Measure<Velocity<Angle>> velocity,
+            Consumer<Measure<Voltage>> voltageConsumer,
+            Runnable updater,
+            PIDConfigs pidConfigs,
+            FeedforwardConfigs feedforwardConfigs,
+            double controlLoopPeriodSeconds,
+            double controlLoopPeriodOffsetSeconds,
+            double updaterPeriodSeconds,
+            double updaterPeriodOffsetSeconds,
+            Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod
+    ) {
+        SimpleMotorFeedforward simpleMotorFeedforward = new SimpleMotorFeedforward(
+                feedforwardConfigs.kS(),
+                feedforwardConfigs.kV(),
+                feedforwardConfigs.kA());
+        PIDController pidController = new PIDController(
+                pidConfigs.kP(),
+                pidConfigs.kI(),
+                pidConfigs.kD(),
+                controlLoopPeriodSeconds);
+        MutableMeasure<Voltage> controlLoopOutput = MutableMeasure.zero(Volts);
+        return new FlywheelSubsystem(
+                name,
+                current,
+                voltage,
+                velocity,
+                voltageConsumer,
+                updater,
                 (currentVelocity, nextVelocity) -> {
                     double voltageFF = simpleMotorFeedforward.calculate(
                             currentVelocity.in(RadiansPerSecond),
@@ -73,8 +125,8 @@ public class FlywheelSubsystem extends SubsystemBase {
                 },
                 controlLoopPeriodSeconds,
                 controlLoopPeriodOffsetSeconds,
-                updatePeriodSeconds,
-                updatePeriodOffsetSeconds,
+                updaterPeriodSeconds,
+                updaterPeriodOffsetSeconds,
                 addPeriodicMethod);
     }
 
