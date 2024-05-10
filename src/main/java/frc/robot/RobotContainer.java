@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,17 +26,31 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public RobotContainer(Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
-        exampleFlywheelSubsystem = FlywheelSubsystem.createSimulatedPIDF(
-                Constants.ExampleFlywheel.name,
-                Constants.ExampleFlywheel.pidConfigs,
-                Constants.ExampleFlywheel.feedforwardConfigs,
-                Constants.ExampleFlywheel.gearbox,
-                Constants.ExampleFlywheel.gearing,
-                Constants.ExampleFlywheel.controlLoopPeriodSeconds,
-                Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
-                Constants.ExampleFlywheel.updaterPeriodSeconds,
-                Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
-                addPeriodicMethod);
+        exampleFlywheelSubsystem = RobotBase.isReal()
+                ?
+                FlywheelSubsystem.createNEOVortexPIDF(
+                        Constants.ExampleFlywheel.name,
+                        Constants.ExampleFlywheel.revConfig,
+                        Constants.ExampleFlywheel.pidConfigs,
+                        Constants.ExampleFlywheel.feedforwardConfigs,
+                        Constants.ExampleFlywheel.gearing,
+                        Constants.ExampleFlywheel.controlLoopPeriodSeconds,
+                        Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
+                        Constants.ExampleFlywheel.updaterPeriodSeconds,
+                        Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
+                        addPeriodicMethod)
+                :
+                FlywheelSubsystem.createSimulatedPIDF(
+                        Constants.ExampleFlywheel.name,
+                        Constants.ExampleFlywheel.pidConfigs,
+                        Constants.ExampleFlywheel.feedforwardConfigs,
+                        Constants.ExampleFlywheel.gearbox,
+                        Constants.ExampleFlywheel.gearing,
+                        Constants.ExampleFlywheel.controlLoopPeriodSeconds,
+                        Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
+                        Constants.ExampleFlywheel.updaterPeriodSeconds,
+                        Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
+                        addPeriodicMethod);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         autoChooser.addOption("NONE", Commands.none());
         autoChooser.addOption("ExampleFlywheelSysIdQuasiForward", exampleFlywheelSubsystem.sysIdQuasistaticForward());

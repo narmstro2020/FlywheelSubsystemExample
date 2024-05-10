@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 
-import com.revrobotics.CANSparkFlex;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -30,11 +29,40 @@ import static edu.wpi.first.units.Units.*;
 public class FlywheelSubsystem extends SubsystemBase {
 
     public static FlywheelSubsystem createNEOVortexPIDF(
+            String name,
             REVConfig revConfig,
             PIDConfigs pidConfigs,
-            FeedforwardConfigs feedforwardConfigs) {
-        CANSparkFlex canSparkFlex = new CANSparkFlex(revConfig.deviceId(), MotorType.kBrushless);
-        return null;
+            FeedforwardConfigs feedforwardConfigs,
+            double gearing,
+            double controlLoopPeriodSeconds,
+            double controlLoopPeriodOffsetSeconds,
+            double updatePeriodSeconds,
+            double updatePeriodOffsetSeconds,
+            Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
+        var canSparkFlex = REVConfig.createSparkFlex(MotorType.kBrushless, revConfig, gearing);
+        MutableMeasure<Current> current = MutableMeasure.zero(Amps);
+        MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
+        MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
+        return FlywheelSubsystem.createPIDF(
+                name,
+                current,
+                voltage,
+                velocity,
+                (inputVoltage) -> canSparkFlex.setVoltage(inputVoltage.in(Volts)),
+                () -> {
+                    current.mut_setMagnitude(canSparkFlex.getOutputCurrent());
+                    voltage.mut_setMagnitude(canSparkFlex.getAppliedOutput() * canSparkFlex.getBusVoltage());
+                    velocity.mut_setMagnitude(canSparkFlex.getEncoder().getVelocity());
+                },
+                pidConfigs,
+                feedforwardConfigs,
+                controlLoopPeriodSeconds,
+                controlLoopPeriodOffsetSeconds,
+                updatePeriodSeconds,
+                updatePeriodOffsetSeconds,
+                addPeriodicMethod
+
+        );
     }
 
     public static FlywheelSubsystem createSimulatedPIDF(

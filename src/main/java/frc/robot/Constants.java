@@ -10,7 +10,7 @@ class Constants {
     static class ExampleFlywheel {
         static String name = "Example-Flywheel";
 
-        static REVConfig exampleFlywheelConfig = new REVConfig(
+        static REVConfig revConfig = new REVConfig(
                 26
         );
         static PIDConfigs pidConfigs = new PIDConfigs(1.0, 0.0, 0.0);
