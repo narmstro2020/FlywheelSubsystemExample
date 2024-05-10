@@ -32,7 +32,6 @@ public class RobotContainer {
                         Constants.ExampleFlywheel.name,
                         Constants.ExampleFlywheel.revConfig,
                         Constants.ExampleFlywheel.pidConfigs,
-                        Constants.ExampleFlywheel.feedforwardConfigs,
                         Constants.ExampleFlywheel.gearing,
                         Constants.ExampleFlywheel.controlLoopPeriodSeconds,
                         Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
@@ -43,7 +42,6 @@ public class RobotContainer {
                 FlywheelSubsystem.createSimulatedPIDF(
                         Constants.ExampleFlywheel.name,
                         Constants.ExampleFlywheel.pidConfigs,
-                        Constants.ExampleFlywheel.feedforwardConfigs,
                         Constants.ExampleFlywheel.gearbox,
                         Constants.ExampleFlywheel.gearing,
                         Constants.ExampleFlywheel.controlLoopPeriodSeconds,
