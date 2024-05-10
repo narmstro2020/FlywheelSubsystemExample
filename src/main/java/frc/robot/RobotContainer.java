@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static edu.wpi.first.units.Units.RPM;
 
@@ -24,7 +25,7 @@ public class RobotContainer {
     private final FlywheelSubsystem exampleFlywheelSubsystem;
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    public RobotContainer(BiConsumer<Runnable, Double> addPeriodicMethod) {
+    public RobotContainer(Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
         exampleFlywheelSubsystem = FlywheelSubsystem.createSimulatedPIDF(
                 "Example",
                 1,
@@ -33,7 +34,9 @@ public class RobotContainer {
                 DCMotor.getNeoVortex(1),
                 0.01,
                 0.01,
+                0.00,
                 0.01,
+                0.00,
                 addPeriodicMethod);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         autoChooser.addOption("NONE", Commands.none());

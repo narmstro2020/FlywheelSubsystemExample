@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -31,8 +32,10 @@ public class FlywheelSubsystem extends SubsystemBase {
             DCMotor gearbox,
             double gearing,
             double controlLoopPeriodSeconds,
+            double controlLoopPeriodOffsetSeconds,
             double updatePeriodSeconds,
-            BiConsumer<Runnable, Double> addPeriodicMethod) {
+            double updatePeriodOffsetSeconds,
+            Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
 
         MutableMeasure<Current> current = MutableMeasure.zero(Amps);
         MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
@@ -69,7 +72,9 @@ public class FlywheelSubsystem extends SubsystemBase {
                     return controlLoopOutput;
                 },
                 controlLoopPeriodSeconds,
+                controlLoopPeriodOffsetSeconds,
                 updatePeriodSeconds,
+                updatePeriodOffsetSeconds,
                 addPeriodicMethod);
     }
 
@@ -90,26 +95,25 @@ public class FlywheelSubsystem extends SubsystemBase {
             Runnable updater,
             BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> controlLoop,
             double controlLoopPeriodSeconds,
-            double updatePeriodSeconds,
-            BiConsumer<Runnable, Double> addPeriodicMethod) {
+            double controlLoopPeriodOffsetSeconds,
+            double updaterPeriodSeconds,
+            double updaterPeriodOffsetSeconds,
+            Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
         this.current = current;
         this.voltage = voltage;
         this.velocity = velocity;
 
-        addPeriodicMethod.accept(
-                updater,
-                updatePeriodSeconds
-        );
+        addPeriodicMethod.apply(updater).accept(updaterPeriodSeconds, updaterPeriodOffsetSeconds);
 
-        addPeriodicMethod.accept(
-                () -> {
-                    if (!sysIdActive) {
-                        voltageConsumer.accept(
-                                controlLoop.apply(velocity, velocitySetpoint)
-                        );
-                    }
-                },
-                controlLoopPeriodSeconds);
+        addPeriodicMethod.apply(
+                        () -> {
+                            if (!sysIdActive) {
+                                voltageConsumer.accept(
+                                        controlLoop.apply(velocity, velocitySetpoint)
+                                );
+                            }
+                        })
+                .accept(controlLoopPeriodSeconds, controlLoopPeriodOffsetSeconds);
 
         sysIdRoutine = new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
@@ -149,8 +153,8 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public Command sysIdQuasistaticForward() {
         return Commands.sequence(
-                runOnce(() -> sysIdActive = true),
-                sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward))
+                        runOnce(() -> sysIdActive = true),
+                        sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward))
                 .withName("sysIdQuasiForward");
     }
 
