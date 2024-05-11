@@ -68,6 +68,8 @@ public class RobotContainer {
     private void configureBindings() {
         commandXboxController.a().whileTrue(
                 exampleFlywheelSubsystem.createSetVelocityCommand(RPM.of(3000)));
+        commandXboxController.a().onFalse(
+                exampleFlywheelSubsystem.createSetVelocityCommand(RPM.of(0.0)).withName("STOP"));
     }
 
 
