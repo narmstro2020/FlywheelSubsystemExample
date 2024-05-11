@@ -12,7 +12,7 @@ public class Constants {
                 64,
                 100,
                 10,
-                20,
+                1,
                 20,
                 50,
                 20,

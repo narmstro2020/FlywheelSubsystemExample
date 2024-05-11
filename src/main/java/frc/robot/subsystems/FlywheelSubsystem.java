@@ -44,7 +44,8 @@ public class FlywheelSubsystem extends SubsystemBase {
                 .withPeriodicStatusFrame3Period(revMotorConfig.periodicStatusFrame3PeriodMs)
                 .withPeriodicStatusFrame4Period(revMotorConfig.periodicStatusFrame4PeriodMs)
                 .withPeriodicStatusFrame5Period(revMotorConfig.periodicStatusFrame5PeriodMs)
-                .withPeriodicStatusFrame6Period(revMotorConfig.periodicStatusFrame6PeriodMs);
+                .withPeriodicStatusFrame6Period(revMotorConfig.periodicStatusFrame6PeriodMs)
+                .withVelocityConversionFactor(canSparkFlex.getEncoder(), flywheelConfigs.gearing);
         MutableMeasure<Current> current = MutableMeasure.zero(Amps);
         MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
         MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
