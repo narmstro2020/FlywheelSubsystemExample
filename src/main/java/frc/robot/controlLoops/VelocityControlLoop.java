@@ -10,7 +10,6 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.*;
-import frc.robot.configs.PIDFConfigs;
 
 
 import java.util.function.BiFunction;
@@ -20,17 +19,20 @@ import static edu.wpi.first.units.Units.*;
 public class VelocityControlLoop {
 
     public static BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> createFlywheelPIDF(
-            PIDFConfigs pidfConfigs,
+            double kS,
+            double kV,
+            double kA,
+            double kP,
             double controlLoopPeriodSeconds
     ) {
         SimpleMotorFeedforward simpleMotorFeedforward = new SimpleMotorFeedforward(
-                pidfConfigs.kS(),
-                pidfConfigs.kV(),
-                pidfConfigs.kA());
+                kS,
+                kV,
+                kA);
         PIDController pidController = new PIDController(
-                pidfConfigs.kP(),
-                pidfConfigs.kI(),
-                pidfConfigs.kD(),
+                kP,
+                0,
+                0,
                 controlLoopPeriodSeconds);
         MutableMeasure<Voltage> controlLoopOutput = MutableMeasure.zero(Volts);
 
@@ -84,7 +86,7 @@ public class VelocityControlLoop {
         Vector<N1> nextReference = VecBuilder.fill(0.0);
 
         return (currentVelocity, nextVelocity) -> {
-            currentReference.set(0,0, currentVelocity.in(RadiansPerSecond));
+            currentReference.set(0, 0, currentVelocity.in(RadiansPerSecond));
             nextReference.set(0, 0, nextVelocity.in(RadiansPerSecond));
             loop.setNextR(nextReference);
             loop.correct(currentReference);

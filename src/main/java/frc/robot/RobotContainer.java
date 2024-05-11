@@ -29,31 +29,25 @@ public class RobotContainer {
     public RobotContainer(Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
         exampleFlywheelSubsystem = RobotBase.isReal()
                 ?
-                FlywheelSubsystem.createNEOVortexPIDF(
-                        Constants.ExampleFlywheel.name,
-                        Constants.ExampleFlywheel.revConfig,
+                FlywheelSubsystem.createNEOVortex(
+                        Constants.REVMotorFlywheelConfigs.ExampleFlywheel,
+                        Constants.FlywheelConfigs.ExampleFlywheel,
                         VelocityControlLoop.createFlywheelPIDF(
-                                Constants.ExampleFlywheel.pidConfigs,
-                                Constants.ExampleFlywheel.controlLoopPeriodSeconds),
-                        Constants.ExampleFlywheel.gearing,
-                        Constants.ExampleFlywheel.controlLoopPeriodSeconds,
-                        Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
-                        Constants.ExampleFlywheel.updaterPeriodSeconds,
-                        Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kS,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kV,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kA,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kP,
+                                Constants.FlywheelConfigs.ExampleFlywheel.controlLoopPeriodSeconds),
                         addPeriodicMethod)
                 :
                 FlywheelSubsystem.createSimulated(
-                        Constants.ExampleFlywheel.name,
-                        Constants.ExampleFlywheel.pidConfigs,
-                        Constants.ExampleFlywheel.gearbox,
-                        Constants.ExampleFlywheel.gearing,
+                        Constants.FlywheelConfigs.ExampleFlywheel,
                         VelocityControlLoop.createFlywheelPIDF(
-                                Constants.ExampleFlywheel.pidConfigs,
-                                Constants.ExampleFlywheel.controlLoopPeriodSeconds),
-                        Constants.ExampleFlywheel.controlLoopPeriodSeconds,
-                        Constants.ExampleFlywheel.controlLoopPeriodOffsetSeconds,
-                        Constants.ExampleFlywheel.updaterPeriodSeconds,
-                        Constants.ExampleFlywheel.updaterPeriodOffsetSeconds,
+                                0.0,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kV,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kA,
+                                Constants.FlywheelConfigs.ExampleFlywheel.kP,
+                                Constants.FlywheelConfigs.ExampleFlywheel.controlLoopPeriodSeconds),
                         addPeriodicMethod);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         autoChooser.addOption("NONE", Commands.none());

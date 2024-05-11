@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
 
+import com.revrobotics.CANSparkFlex;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -13,8 +13,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.configs.PIDFConfigs;
-import frc.robot.configs.REVConfig;
+import frc.robot.Constants;
+import frc.robot.Constants.FlywheelConfigs;
+import frc.robot.configs.REVConfigurator;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -26,22 +27,29 @@ import static edu.wpi.first.units.Units.*;
 
 public class FlywheelSubsystem extends SubsystemBase {
 
-    public static FlywheelSubsystem createNEOVortexPIDF(
-            String name,
-            REVConfig revConfig,
+    public static FlywheelSubsystem createNEOVortex(
+            Constants.REVMotorFlywheelConfigs revMotorConfig,
+            FlywheelConfigs flywheelConfigs,
             BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> controlLoop,
-            double gearing,
-            double controlLoopPeriodSeconds,
-            double controlLoopPeriodOffsetSeconds,
-            double updatePeriodSeconds,
-            double updatePeriodOffsetSeconds,
             Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
-        var canSparkFlex = REVConfig.createSparkFlex(MotorType.kBrushless, revConfig, gearing);
+        CANSparkFlex canSparkFlex = new CANSparkFlex(revMotorConfig.deviceId, MotorType.kBrushless);
+        REVConfigurator configurator = REVConfigurator.configure(canSparkFlex)
+                .withInverted(revMotorConfig.isInverted)
+                .withAverageDepth(canSparkFlex.getEncoder(), revMotorConfig.averageDepth)
+                .withMeasurementPeriod(canSparkFlex.getEncoder(), revMotorConfig.measurementPeriodMs)
+                .withSmartCurrentLimit(revMotorConfig.smartCurrentLimit)
+                .withPeriodicStatusFrame0Period(revMotorConfig.periodicStatusFrame1PeriodMs)
+                .withPeriodicStatusFrame1Period(revMotorConfig.periodicStatusFrame2PeriodMs)
+                .withPeriodicStatusFrame2Period(revMotorConfig.periodicStatusFrame2PeriodMs)
+                .withPeriodicStatusFrame3Period(revMotorConfig.periodicStatusFrame3PeriodMs)
+                .withPeriodicStatusFrame4Period(revMotorConfig.periodicStatusFrame4PeriodMs)
+                .withPeriodicStatusFrame5Period(revMotorConfig.periodicStatusFrame5PeriodMs)
+                .withPeriodicStatusFrame6Period(revMotorConfig.periodicStatusFrame6PeriodMs);
         MutableMeasure<Current> current = MutableMeasure.zero(Amps);
         MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
         MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
         return new FlywheelSubsystem(
-                name,
+                flywheelConfigs.name,
                 current,
                 voltage,
                 velocity,
@@ -52,37 +60,33 @@ public class FlywheelSubsystem extends SubsystemBase {
                     velocity.mut_setMagnitude(canSparkFlex.getEncoder().getVelocity());
                 },
                 controlLoop,
-                controlLoopPeriodSeconds,
-                controlLoopPeriodOffsetSeconds,
-                updatePeriodSeconds,
-                updatePeriodOffsetSeconds,
+                flywheelConfigs.controlLoopPeriodSeconds,
+                flywheelConfigs.controlLoopPeriodOffsetSeconds,
+                flywheelConfigs.updaterPeriodSeconds,
+                flywheelConfigs.updaterPeriodOffsetSeconds,
                 addPeriodicMethod
 
         );
     }
 
     public static FlywheelSubsystem createSimulated(
-            String name,
-            PIDFConfigs pidfConfigs,
-            DCMotor gearbox,
-            double gearing,
+            FlywheelConfigs flywheelConfigs,
             BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> controlLoop,
-            double controlLoopPeriodSeconds,
-            double controlLoopPeriodOffsetSeconds,
-            double updatePeriodSeconds,
-            double updatePeriodOffsetSeconds,
             Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
 
         MutableMeasure<Current> current = MutableMeasure.zero(Amps);
         MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
         MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
         LinearSystem<N1, N1, N1> plant = LinearSystemId.identifyVelocitySystem(
-                pidfConfigs.kV(),
-                pidfConfigs.kA());
-        SimFlywheel simFlywheel = new SimFlywheel(plant, gearbox, gearing);
+                flywheelConfigs.kV,
+                flywheelConfigs.kA);
+        SimFlywheel simFlywheel = new SimFlywheel(
+                plant,
+                flywheelConfigs.gearbox,
+                flywheelConfigs.gearing);
 
         return new FlywheelSubsystem(
-                name,
+                flywheelConfigs.name,
                 current,
                 voltage,
                 velocity,
@@ -91,13 +95,13 @@ public class FlywheelSubsystem extends SubsystemBase {
                     current.mut_setMagnitude(simFlywheel.getCurrentDrawAmps());
                     voltage.mut_setMagnitude(simFlywheel.getInputVoltage());
                     velocity.mut_setMagnitude(simFlywheel.getAngularVelocityRadPerSec());
-                    simFlywheel.update(updatePeriodSeconds);
+                    simFlywheel.update(flywheelConfigs.updaterPeriodSeconds);
                 },
                 controlLoop,
-                controlLoopPeriodSeconds,
-                controlLoopPeriodOffsetSeconds,
-                updatePeriodSeconds,
-                updatePeriodOffsetSeconds,
+                flywheelConfigs.controlLoopPeriodSeconds,
+                flywheelConfigs.controlLoopPeriodOffsetSeconds,
+                flywheelConfigs.updaterPeriodSeconds,
+                flywheelConfigs.updaterPeriodOffsetSeconds,
                 addPeriodicMethod);
     }
 
