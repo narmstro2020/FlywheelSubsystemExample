@@ -77,7 +77,7 @@ public class REVConfigurator {
     }
 
     /**
-     * This sets the getPosition and getVelocity methods of the encoder to return radians and radians per second
+     * This sets the getPosition and getVelocity methods of the RelativeEncoder to return radians and radians per second
      * for the mechanism using the given conversion factor.
      *
      * @param encoder encoder to set conversion factor for

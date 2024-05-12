@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.goatlib.configurator.rev.REVEncoderType;
+import com.goatlib.configurator.rev.REVMotorType;
 import com.revrobotics.CANSparkBase;
 import edu.wpi.first.math.system.plant.DCMotor;
 import com.goatlib.configurator.rev.REVConfigs;
@@ -24,6 +26,8 @@ public class Constants {
 
         public static REVConfigs revConfigs = new REVConfigs(
                 16,
+                REVMotorType.NEOVortexSparkFlex,
+                REVEncoderType.EncoderPort,
                 CANSparkBase.IdleMode.kCoast,
                 false,
                 80,

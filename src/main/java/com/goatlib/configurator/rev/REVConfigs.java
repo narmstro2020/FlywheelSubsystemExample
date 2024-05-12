@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 public record REVConfigs(
         int deviceId,
+        REVMotorType revMotorType,
+        REVEncoderType revEncoderType,
         IdleMode mode,
         boolean isInverted,
         int smartCurrentLimit,

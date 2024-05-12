@@ -5,6 +5,9 @@
 
 package frc.robot;
 
+import com.goatlib.configurator.rev.REVEncoderType;
+import com.goatlib.motors.rev.REVAbsoluteMotor;
+import com.goatlib.motors.rev.REVRelativeMotor;
 import com.goatlib.periodic.PeriodicTask;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import com.goatlib.controlLoops.velocity.SimplePIDFVelocityControlLoop;
 import com.goatlib.mechanisms.flywheels.Flywheel;
 import com.goatlib.motors.FlywheelSimMotor;
-import com.goatlib.motors.NEOVortexMotor;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import static edu.wpi.first.units.Units.RPM;
@@ -31,7 +33,10 @@ public class RobotContainer {
         exampleFlywheelSubsystem = new FlywheelSubsystem(
                 new Flywheel(
                         RobotBase.isReal()
-                                ? new NEOVortexMotor(Constants.ExampleFlywheel.revConfigs)
+                                ?
+                                Constants.ExampleFlywheel.revConfigs.revEncoderType() == REVEncoderType.DataPortAbsolute
+                                        ? new REVAbsoluteMotor(Constants.ExampleFlywheel.revConfigs)
+                                        : new REVRelativeMotor(Constants.ExampleFlywheel.revConfigs)
                                 : new FlywheelSimMotor(Constants.ExampleFlywheel.flywheelConfigs),
                         new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                 Constants.ExampleFlywheel.flywheelConfigs,
