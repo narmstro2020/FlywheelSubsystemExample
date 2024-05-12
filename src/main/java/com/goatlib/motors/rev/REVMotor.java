@@ -6,9 +6,6 @@ import com.revrobotics.*;
 import edu.wpi.first.units.*;
 import com.goatlib.configurator.rev.REVConfigs;
 import com.goatlib.configurator.rev.REVConfigurator;
-import edu.wpi.first.wpilibj.CAN;
-
-import static com.revrobotics.CANSparkLowLevel.*;
 import static edu.wpi.first.units.Units.*;
 
 public abstract class REVMotor implements Motor {

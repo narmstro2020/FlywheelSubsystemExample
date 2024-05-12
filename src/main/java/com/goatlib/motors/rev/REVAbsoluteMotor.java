@@ -10,6 +10,9 @@ public class REVAbsoluteMotor extends REVMotor {
     public REVAbsoluteMotor(REVConfigs revConfigs) {
         super(revConfigs);
         absoluteEncoder = canSparkBase.getAbsoluteEncoder();
+        configurator
+                .withAverageDepth(absoluteEncoder, revConfigs.averageDepth())
+                .withConversionFactor(absoluteEncoder, revConfigs.motorToMechanismConversionFactor());
     }
 
     @Override

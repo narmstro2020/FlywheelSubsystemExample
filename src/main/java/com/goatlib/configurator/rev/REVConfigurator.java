@@ -1,5 +1,6 @@
 package com.goatlib.configurator.rev;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.RelativeEncoder;
 
@@ -71,6 +72,11 @@ public class REVConfigurator {
         return this;
     }
 
+    public REVConfigurator withAverageDepth(AbsoluteEncoder encoder, int depth) {
+        encoder.setAverageDepth(depth);
+        return this;
+    }
+
     public REVConfigurator withMeasurementPeriod(RelativeEncoder encoder, int period_ms) {
         encoder.setMeasurementPeriod(period_ms);
         return this;
@@ -87,6 +93,20 @@ public class REVConfigurator {
     public REVConfigurator withConversionFactor(RelativeEncoder encoder, double factor) {
         encoder.setPositionConversionFactor(2 * Math.PI * factor);
         encoder.setVelocityConversionFactor(2 * Math.PI * factor / 60);
+        return this;
+    }
+
+    /**
+     * This sets the getPosition and getVelocity methods of the AbsoluteEncoder to return radians and radians per second
+     * for the mechanism using the given conversion factor.
+     *
+     * @param encoder encoder to set conversion factor for
+     * @param factor  conversion between motor rotations and mechanism rotations
+     * @return the REVConfigurator for method chaining
+     */
+    public REVConfigurator withConversionFactor(AbsoluteEncoder encoder, double factor) {
+        encoder.setPositionConversionFactor(2 * Math.PI * factor);
+        encoder.setVelocityConversionFactor(2 * Math.PI * factor);
         return this;
     }
 }
