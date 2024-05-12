@@ -5,7 +5,7 @@
 
 package frc.robot;
 
-import com.goatlib.AddPeriodic;
+import com.goatlib.periodic.PeriodicTask;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,22 +27,15 @@ public class RobotContainer {
     private final FlywheelSubsystem exampleFlywheelSubsystem;
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-    public RobotContainer(AddPeriodic addPeriodic) {
-        exampleFlywheelSubsystem = RobotBase.isReal()
-                ?
-                new FlywheelSubsystem(
-                        new Flywheel(
-                                new NEOVortexMotor(Constants.ExampleFlywheel.revConfigs),
-                                new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
-                        Constants.ExampleFlywheel.flywheelConfigs,
-                        addPeriodic)
-                :
-                new FlywheelSubsystem(
-                        new Flywheel(
-                                new FlywheelSimMotor(Constants.ExampleFlywheel.flywheelConfigs),
-                                new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
-                        Constants.ExampleFlywheel.flywheelConfigs,
-                        addPeriodic);
+    public RobotContainer(PeriodicTask addPeriodic) {
+        exampleFlywheelSubsystem = new FlywheelSubsystem(
+                new Flywheel(
+                        RobotBase.isReal()
+                                ? new NEOVortexMotor(Constants.ExampleFlywheel.revConfigs)
+                                : new FlywheelSimMotor(Constants.ExampleFlywheel.flywheelConfigs),
+                        new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
+                Constants.ExampleFlywheel.flywheelConfigs,
+                addPeriodic);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         autoChooser.addOption("NONE", Commands.none());
         autoChooser.addOption("ExampleFlywheelSysIdQuasiForward", exampleFlywheelSubsystem.sysIdQuasistaticForward());

@@ -1,4 +1,4 @@
-package com.goatlib;
+package com.goatlib.periodic;
 
 /**
  Wrapper for TimeRobot.addPeriodic() to pass for other classes usage
@@ -13,7 +13,7 @@ package com.goatlib;
 
  */
 @FunctionalInterface
-public interface AddPeriodic {
+public interface PeriodicTask {
     /**
      * @param callback - what to run periodically
      * @param periodSeconds - time between runs

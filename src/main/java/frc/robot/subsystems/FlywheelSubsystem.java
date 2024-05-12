@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 
-import com.goatlib.AddPeriodic;
+import com.goatlib.periodic.PeriodicTask;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -26,7 +26,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     public FlywheelSubsystem(
             Flywheel flywheel,
             FlywheelConfigs flywheelConfigs,
-            AddPeriodic addPeriodic) {
+            PeriodicTask addPeriodic) {
         this.flywheel = flywheel;
 
         addPeriodic.accept(flywheel::update, flywheelConfigs.updatePeriodSeconds(), flywheelConfigs.updatePeriodOffsetSeconds());
