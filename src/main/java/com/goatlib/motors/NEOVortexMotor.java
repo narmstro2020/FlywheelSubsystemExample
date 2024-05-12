@@ -1,11 +1,11 @@
-package frc.robot.motors;
+package com.goatlib.motors;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.units.*;
-import frc.robot.configurator.rev.REVConfigs;
-import frc.robot.configurator.rev.REVConfigurator;
+import com.goatlib.configurator.rev.REVConfigs;
+import com.goatlib.configurator.rev.REVConfigurator;
 
 import static edu.wpi.first.units.Units.*;
 

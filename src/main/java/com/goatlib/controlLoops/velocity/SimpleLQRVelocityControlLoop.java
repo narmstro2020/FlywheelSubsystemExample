@@ -1,4 +1,4 @@
-package frc.robot.controlLoops.velocity;
+package com.goatlib.controlLoops.velocity;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;

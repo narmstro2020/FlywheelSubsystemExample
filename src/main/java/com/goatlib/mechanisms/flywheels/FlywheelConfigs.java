@@ -1,4 +1,4 @@
-package frc.robot.mechanisms.flywheels;
+package com.goatlib.mechanisms.flywheels;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 

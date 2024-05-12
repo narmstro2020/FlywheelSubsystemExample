@@ -1,9 +1,9 @@
-package frc.robot.motors;
+package com.goatlib.motors;
 
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.mechanisms.flywheels.FlywheelConfigs;
+import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
 
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.RadiansPerSecond;

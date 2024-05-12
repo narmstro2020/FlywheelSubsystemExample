@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 
+import com.goatlib.AddPeriodic;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -9,11 +10,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.mechanisms.flywheels.Flywheel;
-import frc.robot.mechanisms.flywheels.FlywheelConfigs;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import com.goatlib.mechanisms.flywheels.Flywheel;
+import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -28,22 +26,22 @@ public class FlywheelSubsystem extends SubsystemBase {
     public FlywheelSubsystem(
             Flywheel flywheel,
             FlywheelConfigs flywheelConfigs,
-            Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
+            AddPeriodic addPeriodic) {
         this.flywheel = flywheel;
 
-        addPeriodicMethod.apply(flywheel::update)
-                .accept(flywheelConfigs.updatePeriodSeconds(), flywheelConfigs.updatePeriodOffsetSeconds());
+        addPeriodic.accept(flywheel::update, flywheelConfigs.updatePeriodSeconds(), flywheelConfigs.updatePeriodOffsetSeconds());
 
-        addPeriodicMethod.apply(
-                        () -> {
-                            if (!sysIdActive) {
-                                flywheel.setInput(
-                                        flywheel.velocityControlLoop.getOutput(
-                                                flywheel.velocity.in(RadiansPerSecond),
-                                                velocitySetpoint.in(RadiansPerSecond)));
-                            }
-                        })
-                .accept(flywheelConfigs.controlLoopPeriodSeconds(), flywheelConfigs.controlLoopPeriodOffsetSeconds());
+        addPeriodic.accept(
+                () -> {
+                    if (!sysIdActive) {
+                        flywheel.setInput(
+                                flywheel.velocityControlLoop.getOutput(
+                                        flywheel.velocity.in(RadiansPerSecond),
+                                        velocitySetpoint.in(RadiansPerSecond)));
+                    }
+                },
+                flywheelConfigs.controlLoopPeriodSeconds(),
+                flywheelConfigs.controlLoopPeriodOffsetSeconds());
 
         sysIdRoutine = new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.

@@ -1,9 +1,9 @@
-package frc.robot.controlLoops.velocity;
+package com.goatlib.controlLoops.velocity;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import frc.robot.mechanisms.flywheels.FlywheelConfigs;
+import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
 
 public class SimplePIDFVelocityControlLoop implements VelocityControlLoop {
 

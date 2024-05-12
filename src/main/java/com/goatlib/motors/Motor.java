@@ -1,4 +1,4 @@
-package frc.robot.motors;
+package com.goatlib.motors;
 
 import edu.wpi.first.units.*;
 

@@ -2,8 +2,8 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase;
 import edu.wpi.first.math.system.plant.DCMotor;
-import frc.robot.configurator.rev.REVConfigs;
-import frc.robot.mechanisms.flywheels.FlywheelConfigs;
+import com.goatlib.configurator.rev.REVConfigs;
+import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
 
 public class Constants {
 

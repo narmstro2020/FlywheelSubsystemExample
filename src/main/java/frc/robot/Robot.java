@@ -13,7 +13,7 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private final RobotContainer robotContainer = new RobotContainer(
-            (callback) -> (periodSeconds, offsetSeconds) -> addPeriodic(callback, periodSeconds, offsetSeconds));
+            this::addPeriodic);
 
 
     @Override

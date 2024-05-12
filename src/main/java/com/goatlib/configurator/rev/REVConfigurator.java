@@ -1,4 +1,4 @@
-package frc.robot.configurator.rev;
+package com.goatlib.configurator.rev;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.RelativeEncoder;

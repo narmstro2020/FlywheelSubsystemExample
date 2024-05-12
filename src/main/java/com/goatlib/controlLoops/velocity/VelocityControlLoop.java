@@ -1,4 +1,4 @@
-package frc.robot.controlLoops.velocity;
+package com.goatlib.controlLoops.velocity;
 
 public interface VelocityControlLoop {
 

@@ -1,8 +1,8 @@
-package frc.robot.mechanisms.flywheels;
+package com.goatlib.mechanisms.flywheels;
 
 import edu.wpi.first.units.*;
-import frc.robot.controlLoops.velocity.VelocityControlLoop;
-import frc.robot.motors.Motor;
+import com.goatlib.controlLoops.velocity.VelocityControlLoop;
+import com.goatlib.motors.Motor;
 
 import static edu.wpi.first.units.Units.Volts;
 
