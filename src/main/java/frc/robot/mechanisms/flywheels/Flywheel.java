@@ -21,7 +21,9 @@ public abstract class Flywheel {
     public double getControlLoopOutput(
             Measure<Velocity<Angle>> currentVelocity,
             Measure<Velocity<Angle>> nextVelocity) {
-        return velocityControlLoop.getOutput(currentVelocity, nextVelocity);
+        return velocityControlLoop.getOutput(
+                currentVelocity.in(RadiansPerSecond),
+                nextVelocity.in(RadiansPerSecond));
     }
 
     public abstract void update();

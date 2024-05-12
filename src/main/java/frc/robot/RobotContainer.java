@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.controlLoops.velocity.FlywheelPIDFControlLoop;
+import frc.robot.controlLoops.velocity.SimplePIDFVelocityControlLoop;
 import frc.robot.mechanisms.flywheels.FlywheelNEOVortex;
 import frc.robot.mechanisms.flywheels.FlywheelSimulated;
 import frc.robot.subsystems.FlywheelSubsystem;
@@ -35,14 +35,14 @@ public class RobotContainer {
                         new FlywheelNEOVortex(
                                 Constants.ExampleFlywheel.flywheelConfigs,
                                 Constants.ExampleFlywheel.revConfigs,
-                                new FlywheelPIDFControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
+                                new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                         Constants.ExampleFlywheel.flywheelConfigs,
                         addPeriodicMethod)
                 :
                 new FlywheelSubsystem(
                         new FlywheelSimulated(
                                 Constants.ExampleFlywheel.flywheelConfigs,
-                                new FlywheelPIDFControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
+                                new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                         Constants.ExampleFlywheel.flywheelConfigs,
                         addPeriodicMethod);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);

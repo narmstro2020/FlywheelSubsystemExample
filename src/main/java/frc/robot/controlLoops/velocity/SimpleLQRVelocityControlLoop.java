@@ -10,18 +10,15 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.*;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-public class FlywheelLQRControlLoop implements VelocityControlLoop {
+public class SimpleLQRVelocityControlLoop implements VelocityControlLoop {
 
     private final Vector<N1> currentReference;
     private final Vector<N1> nextReference;
     private final LinearSystemLoop<N1, N1, N1> loop;
     private final double controlLoopPeriodSeconds;
 
-    public FlywheelLQRControlLoop(
+    public SimpleLQRVelocityControlLoop(
             double kV,
             double kA,
             double stateStdDev,
@@ -55,9 +52,9 @@ public class FlywheelLQRControlLoop implements VelocityControlLoop {
     }
 
     @Override
-    public double getOutput(Measure<Velocity<Angle>> currentVelocity, Measure<Velocity<Angle>> nextVelocity) {
-        currentReference.set(0, 0, currentVelocity.in(RadiansPerSecond));
-        nextReference.set(0, 0, nextVelocity.in(RadiansPerSecond));
+    public double getOutput(double currentVelocity, double nextVelocity) {
+        currentReference.set(0, 0, currentVelocity);
+        nextReference.set(0, 0, nextVelocity);
         loop.setNextR(nextReference);
         loop.correct(currentReference);
         loop.predict(controlLoopPeriodSeconds);
