@@ -3,15 +3,16 @@ package frc.robot.mechanisms.flywheels;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import frc.robot.controlLoops.velocity.VelocityControlLoop;
 import frc.robot.subsystems.SimFlywheel;
 
-public class FlywheelPIDFSimulated extends FlywheelPIDF {
+public class FlywheelSimulated extends Flywheel {
 
     private final SimFlywheel simFlywheel;
     private final double updatePeriodSeconds;
 
-    public FlywheelPIDFSimulated(FlywheelConfigs flywheelConfigs) {
-        super(flywheelConfigs);
+    public FlywheelSimulated(FlywheelConfigs flywheelConfigs, VelocityControlLoop velocityControlLoop) {
+        super(velocityControlLoop);
 
         LinearSystem<N1, N1, N1> plant = LinearSystemId.identifyVelocitySystem(
                 flywheelConfigs.kV(),

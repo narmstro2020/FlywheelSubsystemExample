@@ -3,14 +3,18 @@ package frc.robot.mechanisms.flywheels;
 import com.revrobotics.CANSparkFlex;
 import frc.robot.configurator.rev.REVConfigs;
 import frc.robot.configurator.rev.REVConfigurator;
+import frc.robot.controlLoops.velocity.VelocityControlLoop;
 
 import static com.revrobotics.CANSparkLowLevel.*;
 
-public class FlywheelPIDFNEOVortex extends FlywheelPIDF {
+public class FlywheelNEOVortex extends Flywheel {
     private final CANSparkFlex canSparkFlex;
 
-    public FlywheelPIDFNEOVortex(FlywheelConfigs flywheelConfigs, REVConfigs revConfigs) {
-        super(flywheelConfigs);
+    public FlywheelNEOVortex(
+            FlywheelConfigs flywheelConfigs,
+            REVConfigs revConfigs,
+            VelocityControlLoop velocityControlLoop) {
+        super(velocityControlLoop);
         canSparkFlex = new CANSparkFlex(revConfigs.deviceId(), MotorType.kBrushless);
         REVConfigurator configurator = REVConfigurator.configure(canSparkFlex)
                 .withIdleMode(revConfigs.mode())

@@ -1,4 +1,4 @@
-package frc.robot.controlLoops;
+package frc.robot.controlLoops.velocity;
 
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -14,9 +14,11 @@ import java.util.function.BiFunction;
 
 import static edu.wpi.first.units.Units.*;
 
-public class VelocityControlLoop {
+public interface VelocityControlLoop {
 
-    public static BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> createFlywheelLQR(
+    double getOutput(Measure<Velocity<Angle>> currentVelocity, Measure<Velocity<Angle>> nextVelocity);
+
+    static BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> createFlywheelLQR(
             double kV,
             double kA,
             double stateStdDev,
@@ -59,9 +61,6 @@ public class VelocityControlLoop {
             controlLoopOutput.mut_setMagnitude(loop.getU(0));
             return controlLoopOutput;
         };
-    }
-
-    private VelocityControlLoop() {
     }
 
 }

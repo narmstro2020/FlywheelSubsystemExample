@@ -1,4 +1,4 @@
-package frc.robot.mechanisms.flywheels;
+package frc.robot.controlLoops.velocity;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -6,16 +6,17 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import frc.robot.mechanisms.flywheels.FlywheelConfigs;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-public abstract class FlywheelPIDF extends Flywheel {
+public class FlywheelPIDFControlLoop implements VelocityControlLoop {
 
     private final SimpleMotorFeedforward simpleMotorFeedforward;
     private final PIDController pidController;
     private final double controlLoopPeriodSeconds;
 
-    public FlywheelPIDF(FlywheelConfigs flywheelConfigs) {
+    public FlywheelPIDFControlLoop(FlywheelConfigs flywheelConfigs) {
         simpleMotorFeedforward = new SimpleMotorFeedforward(
                 flywheelConfigs.kS(),
                 flywheelConfigs.kV(),
@@ -28,11 +29,8 @@ public abstract class FlywheelPIDF extends Flywheel {
         this.controlLoopPeriodSeconds = flywheelConfigs.controlLoopPeriodSeconds();
     }
 
-
     @Override
-    public double getControlLoopOutput(
-            Measure<Velocity<Angle>> currentVelocity,
-            Measure<Velocity<Angle>> nextVelocity) {
+    public double getOutput(Measure<Velocity<Angle>> currentVelocity, Measure<Velocity<Angle>> nextVelocity) {
         double voltageFF = simpleMotorFeedforward.calculate(
                 currentVelocity.in(RadiansPerSecond),
                 nextVelocity.in(RadiansPerSecond),
@@ -44,7 +42,4 @@ public abstract class FlywheelPIDF extends Flywheel {
         totalVoltage = MathUtil.clamp(totalVoltage, -12.0, 12.0);
         return totalVoltage;
     }
-
-
 }
-
