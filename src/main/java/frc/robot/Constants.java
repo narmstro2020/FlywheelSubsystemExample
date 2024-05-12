@@ -35,7 +35,8 @@ public class Constants {
                 50,
                 20,
                 200,
-                200
+                200,
+                ExampleFlywheel.flywheelConfigs.gearing()
         );
     }
 

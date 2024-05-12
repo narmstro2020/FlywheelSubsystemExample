@@ -2,29 +2,35 @@ package frc.robot.mechanisms.flywheels;
 
 import edu.wpi.first.units.*;
 import frc.robot.controlLoops.velocity.VelocityControlLoop;
+import frc.robot.motors.Motor;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
 
-public abstract class Flywheel {
-
-    public final MutableMeasure<Current> current = MutableMeasure.zero(Amps);
-    public final MutableMeasure<Voltage> voltage = MutableMeasure.zero(Volts);
-    public final MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RadiansPerSecond);
+public class Flywheel {
     public final VelocityControlLoop velocityControlLoop;
+    public final Measure<Velocity<Angle>> velocity;
+    public final Measure<Current> current;
+    public final Measure<Voltage> voltage;
+    private final MutableMeasure<Voltage> voltageSetpoint = MutableMeasure.zero(Volts);
+    private final Motor motor;
 
-    public Flywheel(VelocityControlLoop velocityControlLoop) {
+
+    public Flywheel(
+            Motor motor,
+            VelocityControlLoop velocityControlLoop) {
+        this.current = motor.getCurrent();
+        this.voltage = motor.getVoltage();
+        this.velocity = motor.getVelocity();
         this.velocityControlLoop = velocityControlLoop;
+        this.motor = motor;
     }
 
-    public abstract void setInput(double input);
-
-    public double getControlLoopOutput(
-            Measure<Velocity<Angle>> currentVelocity,
-            Measure<Velocity<Angle>> nextVelocity) {
-        return velocityControlLoop.getOutput(
-                currentVelocity.in(RadiansPerSecond),
-                nextVelocity.in(RadiansPerSecond));
+    public void setInput(double input) {
+        voltageSetpoint.mut_setMagnitude(input);
+        motor.setVoltage(voltage);
     }
 
-    public abstract void update();
+    public void update() {
+        motor.update();
+    }
 }

@@ -38,10 +38,9 @@ public class FlywheelSubsystem extends SubsystemBase {
                         () -> {
                             if (!sysIdActive) {
                                 flywheel.setInput(
-                                        flywheel.getControlLoopOutput(
-                                                flywheel.velocity,
-                                                velocitySetpoint)
-                                );
+                                        flywheel.velocityControlLoop.getOutput(
+                                                flywheel.velocity.in(RadiansPerSecond),
+                                                velocitySetpoint.in(RadiansPerSecond)));
                             }
                         })
                 .accept(flywheelConfigs.controlLoopPeriodSeconds(), flywheelConfigs.controlLoopPeriodOffsetSeconds());

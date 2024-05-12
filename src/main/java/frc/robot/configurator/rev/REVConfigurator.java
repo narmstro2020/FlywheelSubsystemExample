@@ -77,25 +77,15 @@ public class REVConfigurator {
     }
 
     /**
-     * This sets the getPosition method of the encoder to return radians for the mechanism using the given conversion factor.
+     * This sets the getPosition and getVelocity methods of the encoder to return radians and radians per second
+     * for the mechanism using the given conversion factor.
      *
      * @param encoder encoder to set conversion factor for
      * @param factor  conversion between motor rotations and mechanism rotations
      * @return the REVConfigurator for method chaining
      */
-    public REVConfigurator withPositionConversionFactor(RelativeEncoder encoder, double factor) {
+    public REVConfigurator withConversionFactor(RelativeEncoder encoder, double factor) {
         encoder.setPositionConversionFactor(2 * Math.PI * factor);
-        return this;
-    }
-
-    /**
-     * This sets the getVelocity method of the encoder to return radians per second for the mechanism using the given conversion factor.
-     *
-     * @param encoder encoder to set conversion factor for
-     * @param factor  conversion between motor rotations and mechanism rotations
-     * @return the REVConfigurator for method chaining
-     */
-    public REVConfigurator withVelocityConversionFactor(RelativeEncoder encoder, double factor) {
         encoder.setVelocityConversionFactor(2 * Math.PI * factor / 60);
         return this;
     }

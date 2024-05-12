@@ -15,6 +15,7 @@ public record REVConfigs(
         int periodicStatusFrame3PeriodMs,
         int periodicStatusFrame4PeriodMs,
         int periodicStatusFrame5PeriodMs,
-        int periodicStatusFrame6PeriodMs
+        int periodicStatusFrame6PeriodMs,
+        double motorToMechanismConversionFactor
 ) {
 }

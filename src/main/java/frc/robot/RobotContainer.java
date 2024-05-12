@@ -12,8 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.controlLoops.velocity.SimplePIDFVelocityControlLoop;
-import frc.robot.mechanisms.flywheels.FlywheelNEOVortex;
-import frc.robot.mechanisms.flywheels.FlywheelSimulated;
+import frc.robot.mechanisms.flywheels.Flywheel;
+import frc.robot.motors.FlywheelSimMotor;
+import frc.robot.motors.NEOVortexMotor;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.util.function.BiConsumer;
@@ -32,16 +33,15 @@ public class RobotContainer {
         exampleFlywheelSubsystem = RobotBase.isReal()
                 ?
                 new FlywheelSubsystem(
-                        new FlywheelNEOVortex(
-                                Constants.ExampleFlywheel.flywheelConfigs,
-                                Constants.ExampleFlywheel.revConfigs,
+                        new Flywheel(
+                                new NEOVortexMotor(Constants.ExampleFlywheel.revConfigs),
                                 new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                         Constants.ExampleFlywheel.flywheelConfigs,
                         addPeriodicMethod)
                 :
                 new FlywheelSubsystem(
-                        new FlywheelSimulated(
-                                Constants.ExampleFlywheel.flywheelConfigs,
+                        new Flywheel(
+                                new FlywheelSimMotor(Constants.ExampleFlywheel.flywheelConfigs),
                                 new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                         Constants.ExampleFlywheel.flywheelConfigs,
                         addPeriodicMethod);
