@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.controlLoops.VelocityControlLoop;
+import frc.robot.mechanisms.flywheels.FlywheelPIDFNEOVortex;
+import frc.robot.mechanisms.flywheels.FlywheelPIDFSimulated;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import java.util.function.BiConsumer;
@@ -29,25 +30,17 @@ public class RobotContainer {
     public RobotContainer(Function<Runnable, BiConsumer<Double, Double>> addPeriodicMethod) {
         exampleFlywheelSubsystem = RobotBase.isReal()
                 ?
-                FlywheelSubsystem.createNEOVortex(
-                        Constants.REVMotorFlywheelConfigs.ExampleFlywheel,
-                        Constants.FlywheelConfigs.ExampleFlywheel,
-                        VelocityControlLoop.createFlywheelPIDF(
-                                Constants.FlywheelConfigs.ExampleFlywheel.kS,
-                                Constants.FlywheelConfigs.ExampleFlywheel.kV,
-                                Constants.FlywheelConfigs.ExampleFlywheel.kA,
-                                Constants.FlywheelConfigs.ExampleFlywheel.kP,
-                                Constants.FlywheelConfigs.ExampleFlywheel.controlLoopPeriodSeconds),
+                new FlywheelSubsystem(
+                        new FlywheelPIDFNEOVortex(
+                                Constants.ExampleFlywheel.flywheelConfigs,
+                                Constants.ExampleFlywheel.revConfigs
+                        ),
+                        Constants.ExampleFlywheel.flywheelConfigs,
                         addPeriodicMethod)
                 :
-                FlywheelSubsystem.createSimulated(
-                        Constants.FlywheelConfigs.ExampleFlywheel,
-                        VelocityControlLoop.createFlywheelPIDF(
-                                0.0,
-                                Constants.FlywheelConfigs.ExampleFlywheel.kV,
-                                Constants.FlywheelConfigs.ExampleFlywheel.kA,
-                                Constants.FlywheelConfigs.ExampleFlywheel.kP,
-                                Constants.FlywheelConfigs.ExampleFlywheel.controlLoopPeriodSeconds),
+                new FlywheelSubsystem(
+                        new FlywheelPIDFSimulated(Constants.ExampleFlywheel.flywheelConfigs),
+                        Constants.ExampleFlywheel.flywheelConfigs,
                         addPeriodicMethod);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         autoChooser.addOption("NONE", Commands.none());
