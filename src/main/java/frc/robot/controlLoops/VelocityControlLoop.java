@@ -18,39 +18,6 @@ import static edu.wpi.first.units.Units.*;
 
 public class VelocityControlLoop {
 
-    public static BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> createFlywheelPIDF(
-            double kS,
-            double kV,
-            double kA,
-            double kP,
-            double controlLoopPeriodSeconds
-    ) {
-        SimpleMotorFeedforward simpleMotorFeedforward = new SimpleMotorFeedforward(
-                kS,
-                kV,
-                kA);
-        PIDController pidController = new PIDController(
-                kP,
-                0,
-                0,
-                controlLoopPeriodSeconds);
-        MutableMeasure<Voltage> controlLoopOutput = MutableMeasure.zero(Volts);
-
-        return (currentVelocity, nextVelocity) -> {
-            double voltageFF = simpleMotorFeedforward.calculate(
-                    currentVelocity.in(RadiansPerSecond),
-                    nextVelocity.in(RadiansPerSecond),
-                    controlLoopPeriodSeconds);
-            double voltageFB = pidController.calculate(
-                    currentVelocity.in(RadiansPerSecond),
-                    nextVelocity.in(RadiansPerSecond));
-            double totalVoltage = voltageFF + voltageFB;
-            totalVoltage = MathUtil.clamp(totalVoltage, -12.0, 12.0);
-            controlLoopOutput.mut_setMagnitude(totalVoltage);
-            return controlLoopOutput;
-        };
-    }
-
     public static BiFunction<Measure<Velocity<Angle>>, Measure<Velocity<Angle>>, Measure<Voltage>> createFlywheelLQR(
             double kV,
             double kA,
