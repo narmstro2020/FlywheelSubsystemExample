@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import com.goatlib.controlLoops.velocity.SimplePIDFVelocityControlLoop;
 import com.goatlib.mechanisms.flywheels.Flywheel;
-import com.goatlib.motors.FlywheelSimMotor;
+import com.goatlib.motors.SimMotor;
 import frc.robot.subsystems.FlywheelSubsystem;
 
 import static edu.wpi.first.units.Units.RPM;
@@ -32,7 +32,7 @@ public class RobotContainer {
                 new Flywheel(
                         RobotBase.isReal()
                                 ? new REVRelativeMotor(Constants.ExampleFlywheel.revConfigs)
-                                : new FlywheelSimMotor(Constants.ExampleFlywheel.flywheelConfigs),
+                                : new SimMotor(Constants.ExampleFlywheel.flywheelConfigs),
                         new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                 Constants.ExampleFlywheel.flywheelConfigs,
                 addPeriodic);

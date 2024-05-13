@@ -1,8 +1,8 @@
-package com.goatlib.mechanisms.flywheels;
+package com.goatlib.mechanisms;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 
-public record FlywheelConfigs(
+public record SimpleMotorConfigs(
         String name,
         DCMotor gearbox,
         double gearing,
@@ -13,6 +13,7 @@ public record FlywheelConfigs(
         double kS,
         double kV,
         double kA,
-        double kP
-) {
+        double kP,
+        double kI,
+        double kD) {
 }

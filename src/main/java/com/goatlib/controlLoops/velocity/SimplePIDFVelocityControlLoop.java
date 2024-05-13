@@ -3,7 +3,7 @@ package com.goatlib.controlLoops.velocity;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
+import com.goatlib.mechanisms.SimpleMotorConfigs;
 
 public class SimplePIDFVelocityControlLoop implements VelocityControlLoop {
 
@@ -11,15 +11,15 @@ public class SimplePIDFVelocityControlLoop implements VelocityControlLoop {
     private final PIDController pidController;
     private final double controlLoopPeriodSeconds;
 
-    public SimplePIDFVelocityControlLoop(FlywheelConfigs flywheelConfigs) {
+    public SimplePIDFVelocityControlLoop(SimpleMotorConfigs flywheelConfigs) {
         simpleMotorFeedforward = new SimpleMotorFeedforward(
                 flywheelConfigs.kS(),
                 flywheelConfigs.kV(),
                 flywheelConfigs.kA());
         pidController = new PIDController(
                 flywheelConfigs.kP(),
-                0,
-                0,
+                flywheelConfigs.kI(),
+                flywheelConfigs.kD(),
                 flywheelConfigs.controlLoopPeriodSeconds());
         this.controlLoopPeriodSeconds = flywheelConfigs.controlLoopPeriodSeconds();
     }

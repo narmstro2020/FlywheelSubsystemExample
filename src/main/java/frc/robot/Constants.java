@@ -5,12 +5,12 @@ import com.goatlib.configurator.rev.REVMotorType;
 import com.revrobotics.CANSparkBase;
 import edu.wpi.first.math.system.plant.DCMotor;
 import com.goatlib.configurator.rev.REVConfigs;
-import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
+import com.goatlib.mechanisms.SimpleMotorConfigs;
 
 public class Constants {
 
     public static class ExampleFlywheel {
-        public static FlywheelConfigs flywheelConfigs = new FlywheelConfigs(
+        public static SimpleMotorConfigs flywheelConfigs = new SimpleMotorConfigs(
                 "Example-Flywheel",
                 DCMotor.getNeoVortex(1),
                 1.0,
@@ -21,8 +21,9 @@ public class Constants {
                 0.0,
                 0.017,
                 0.001,
-                1.0e-19
-        );
+                1.0e-19,
+                0.0,
+                0.0);
 
         public static REVConfigs revConfigs = new REVConfigs(
                 16,

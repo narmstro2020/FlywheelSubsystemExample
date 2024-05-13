@@ -3,19 +3,19 @@ package com.goatlib.motors;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import com.goatlib.mechanisms.flywheels.FlywheelConfigs;
+import com.goatlib.mechanisms.SimpleMotorConfigs;
 
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-public class FlywheelSimMotor extends DCMotorSim implements Motor {
+public class SimMotor extends DCMotorSim implements Motor {
     private final MutableMeasure<Current> current;
     private final MutableMeasure<Voltage> voltage;
     private final MutableMeasure<Angle> position;
     private final MutableMeasure<Velocity<Angle>> velocity;
     private final double updatePeriodSeconds;
 
-    public FlywheelSimMotor(FlywheelConfigs flywheelConfigs) {
+    public SimMotor(SimpleMotorConfigs flywheelConfigs) {
         super(
                 LinearSystemId.createDCMotorSystem(
                         flywheelConfigs.kV(),
@@ -33,32 +33,31 @@ public class FlywheelSimMotor extends DCMotorSim implements Motor {
 
     @Override
     public Measure<Current> getCurrent() {
-        return null;
+        return current;
     }
 
     @Override
     public Measure<Voltage> getVoltage() {
-        return null;
+        return voltage;
     }
 
     @Override
     public Measure<Angle> getPosition() {
-        return null;
+        return position;
     }
 
     @Override
     public Measure<Velocity<Angle>> getVelocity() {
-        return null;
+        return velocity;
     }
 
     @Override
     public void setVoltage(Measure<Voltage> voltage) {
-
+        setInputVoltage(voltage.in(Volts));
     }
 
     @Override
     public void setCurrent(Measure<Current> current) {
-
     }
 
     @Override
