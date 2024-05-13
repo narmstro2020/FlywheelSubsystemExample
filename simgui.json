@@ -2,13 +2,14 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Example Flywheel": "Subsystem"
+      "/SmartDashboard/Example Flywheel": "Subsystem",
+      "/SmartDashboard/Example Turret": "Subsystem"
     }
   },
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
-        "Example Flywheel": {
+        "Example Turret": {
           "open": true
         },
         "open": true

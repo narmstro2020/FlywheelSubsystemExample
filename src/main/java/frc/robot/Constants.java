@@ -45,7 +45,41 @@ public class Constants {
         );
     }
 
+    public static class ExampleTurret {
+        public static SimpleMotorConfigs simpleMotorConfigs = new SimpleMotorConfigs(
+                "Example-Turret",
+                DCMotor.getNeoVortex(1),
+                1.0,
+                0.01,
+                0.00,
+                0.01,
+                0.00,
+                0.0,
+                0.017,
+                0.0001,
+                1.0,
+                0.0,
+                0.0);
 
+        public static REVConfigs revConfigs = new REVConfigs(
+                10,
+                REVMotorType.NEOVortexSparkFlex,
+                REVEncoderType.EncoderPort,
+                CANSparkBase.IdleMode.kCoast,
+                false,
+                80,
+                64,
+                100,
+                10,
+                1,
+                20,
+                50,
+                20,
+                200,
+                200,
+                ExampleTurret.simpleMotorConfigs.gearing()
+        );
+    }
     private Constants() {
     }
 }

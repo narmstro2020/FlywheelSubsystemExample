@@ -18,8 +18,8 @@ public class Turret {
 
     public Turret(
             Motor motor,
-            PositionControlLoop positionControlLoop, Measure<Angle> position) {
-        this.position = position;
+            PositionControlLoop positionControlLoop) {
+        this.position = motor.getPosition();
         this.velocity = motor.getVelocity();
         this.current = motor.getCurrent();
         this.voltage = motor.getVoltage();
@@ -29,7 +29,7 @@ public class Turret {
 
     public void setInput(double input) {
         voltageSetpoint.mut_setMagnitude(input);
-        motor.setVoltage(voltage);
+        motor.setVoltage(voltageSetpoint);
     }
 
     public void update() {

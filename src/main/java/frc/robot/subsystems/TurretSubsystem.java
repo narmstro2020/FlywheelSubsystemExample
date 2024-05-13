@@ -80,11 +80,11 @@ public class TurretSubsystem extends SubsystemBase {
                 .and(() -> MathUtil.isNear(0.0, turret.velocity.in(RadiansPerSecond), 0.0));
     }
 
-    public Command createHoldCommand(){
+    public Command createHoldCommand() {
         return Commands.sequence(
                         runOnce(() -> sysIdActive = false),
-                        run(() -> positionSetpoint.mut_setMagnitude(positionSetpoint.in(Radians))))
-                .withName(String.format("hold position at %s degrees", positionSetpoint.in(Degrees)));
+                        runOnce(() -> positionSetpoint.mut_setMagnitude(turret.position.in(Radians))))
+                .withName("hold position");
     }
 
     public Command createSetPositionCommand(Measure<Angle> position) {

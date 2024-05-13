@@ -5,6 +5,8 @@
 
 package frc.robot;
 
+import com.goatlib.controlLoops.position.SimplePIDPositionControlLoop;
+import com.goatlib.mechanisms.turrets.Turret;
 import com.goatlib.motors.rev.REVRelativeMotor;
 import com.goatlib.periodic.PeriodicTask;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -17,7 +19,9 @@ import com.goatlib.controlLoops.velocity.SimplePIDFVelocityControlLoop;
 import com.goatlib.mechanisms.flywheels.Flywheel;
 import com.goatlib.motors.SimMotor;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 
 
@@ -25,6 +29,7 @@ public class RobotContainer {
 
     private final CommandXboxController commandXboxController = new CommandXboxController(0);
     private final FlywheelSubsystem exampleFlywheelSubsystem;
+    private final TurretSubsystem exampleTurretSubsystem;
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public RobotContainer(PeriodicTask addPeriodic) {
@@ -36,7 +41,19 @@ public class RobotContainer {
                         new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                 Constants.ExampleFlywheel.flywheelConfigs,
                 addPeriodic);
+        exampleTurretSubsystem = new TurretSubsystem(
+                new Turret(
+                        RobotBase.isReal()
+                                ? new REVRelativeMotor(Constants.ExampleTurret.revConfigs)
+                                : new SimMotor(Constants.ExampleTurret.simpleMotorConfigs),
+                        SimplePIDPositionControlLoop.createWithTrapezoidProfile(
+                                Constants.ExampleTurret.simpleMotorConfigs,
+                                -Math.PI / 2,
+                                Math.PI / 2)),
+                Constants.ExampleFlywheel.flywheelConfigs,
+                addPeriodic);
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
+        SmartDashboard.putData("Example Turret", exampleTurretSubsystem);
         autoChooser.addOption("NONE", Commands.none());
         autoChooser.addOption("ExampleFlywheelSysIdQuasiForward", exampleFlywheelSubsystem.sysIdQuasistaticForward());
         autoChooser.addOption("ExampleFlywheelSysIdQuasiReverse", exampleFlywheelSubsystem.sysIdQuasistaticReverse());
@@ -51,6 +68,14 @@ public class RobotContainer {
                 exampleFlywheelSubsystem.createSetVelocityCommand(RPM.of(3000)));
         commandXboxController.a().onFalse(
                 exampleFlywheelSubsystem.createSetVelocityCommand(RPM.of(0.0)).withName("STOP"));
+        commandXboxController.b().whileTrue(
+                exampleTurretSubsystem.createSetPositionCommand(Degrees.of(45)));
+        commandXboxController.b().onFalse(
+                exampleTurretSubsystem.createHoldCommand());
+        commandXboxController.x().whileTrue(
+                exampleTurretSubsystem.createSetPositionCommand(Degrees.of(0.0)));
+        commandXboxController.x().onFalse(
+                exampleTurretSubsystem.createHoldCommand());
     }
 
 
