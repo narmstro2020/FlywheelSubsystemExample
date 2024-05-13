@@ -12,10 +12,7 @@ public class REVRelativeMotor extends REVMotor {
     public REVRelativeMotor(REVConfigs revConfigs) {
         super(revConfigs);
         relativeEncoder = canSparkBase.getEncoder();
-        configurator
-                .withAverageDepth(relativeEncoder, revConfigs.averageDepth())
-                .withMeasurementPeriod(relativeEncoder, revConfigs.measurementPeriodMs())
-                .withConversionFactor(relativeEncoder, revConfigs.motorToMechanismConversionFactor());
+
     }
 
     public REVRelativeMotor(REVConfigs revConfigs, int countsPerRev) {

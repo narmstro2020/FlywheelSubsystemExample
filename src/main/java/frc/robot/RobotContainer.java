@@ -5,8 +5,6 @@
 
 package frc.robot;
 
-import com.goatlib.configurator.rev.REVEncoderType;
-import com.goatlib.motors.rev.REVAbsoluteMotor;
 import com.goatlib.motors.rev.REVRelativeMotor;
 import com.goatlib.periodic.PeriodicTask;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -33,10 +31,7 @@ public class RobotContainer {
         exampleFlywheelSubsystem = new FlywheelSubsystem(
                 new Flywheel(
                         RobotBase.isReal()
-                                ?
-                                Constants.ExampleFlywheel.revConfigs.revEncoderType() == REVEncoderType.DataPortAbsolute
-                                        ? new REVAbsoluteMotor(Constants.ExampleFlywheel.revConfigs)
-                                        : new REVRelativeMotor(Constants.ExampleFlywheel.revConfigs)
+                                ? new REVRelativeMotor(Constants.ExampleFlywheel.revConfigs)
                                 : new FlywheelSimMotor(Constants.ExampleFlywheel.flywheelConfigs),
                         new SimplePIDFVelocityControlLoop(Constants.ExampleFlywheel.flywheelConfigs)),
                 Constants.ExampleFlywheel.flywheelConfigs,
