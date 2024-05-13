@@ -19,6 +19,7 @@ import com.goatlib.controlLoops.velocity.SimplePIDFVelocityControlLoop;
 import com.goatlib.mechanisms.flywheels.Flywheel;
 import com.goatlib.motors.SimMotor;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -30,6 +31,7 @@ public class RobotContainer {
     private final CommandXboxController commandXboxController = new CommandXboxController(0);
     private final FlywheelSubsystem exampleFlywheelSubsystem;
     private final TurretSubsystem exampleTurretSubsystem;
+    private final LEDSubsystem exampleLedSubsystem;
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public RobotContainer(PeriodicTask addPeriodic) {
@@ -52,6 +54,7 @@ public class RobotContainer {
                                 Math.PI / 2)),
                 Constants.ExampleFlywheel.flywheelConfigs,
                 addPeriodic);
+        exampleLedSubsystem = new LEDSubsystem();
         SmartDashboard.putData("Example Flywheel", exampleFlywheelSubsystem);
         SmartDashboard.putData("Example Turret", exampleTurretSubsystem);
         autoChooser.addOption("NONE", Commands.none());
